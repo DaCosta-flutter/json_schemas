@@ -1,0 +1,156 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/JMXToolConfig",
+    "definitions": {
+        "JMXToolConfig": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "name of the command (generally along the lines of '<tla>cli')"
+                },
+                "config": {
+                    "description": "holds the configuration for each environment",
+                    "$ref": "#/definitions/Config"
+                },
+                "builtinCommands": {
+                    "type": "array",
+                    "description": "Defines the set of built in commands to be available",
+                    "items": {
+                        "$ref": "#/definitions/BuiltInCommand"
+                    }
+                },
+                "customCommands": {
+                    "type": "array",
+                    "description": "Optional. This is used to add custom, configurable commands - allows expanding the capabilities of the tool",
+                    "items": {
+                        "$ref": "#/definitions/CustomCommand"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "config",
+                "builtinCommands"
+            ],
+            "title": "JMXToolConfig"
+        },
+        "Config": {
+            "type": "object",
+            "description": "The actual configuration for each brand and environment",
+			"additionalProperties": {"type": "object", "$ref": "#/definitions/Brand"},
+            "title": "Config"
+        },
+        "Brand": {
+            "type": "object",
+            "description": "The actual configuration for each environment of this brand",
+            "additionalProperties": {"type": "object", "$ref": "#/definitions/EnvironmentConfig"},
+            "title": "Brand"
+        },
+        "BuiltInCommand": {
+            "type": "string",
+            "enum": ["execute", "healthcheck", "toggles", "loglevel"]
+        },
+        "EnvironmentConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "baseTemplateUrl": {
+                    "type": "string",
+                    "description": "the URL template to use for the service hosts.\n\nExample: 'http://{dc}-fcm{vmnum}-{env}.{az}.betfair'. The dc, vmnum, env and az will be replaced",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "numVmsStartIdx": {
+                    "type": "integer",
+                    "description": "Optional (default is 1). Defines the first VM number.",
+                    "default": 1,
+                    "minimum": 0
+                },
+                "numVmsFormat": {
+                    "type": "string",
+                    "description": "Optional (default is '%02d'). how to format the {vmnum} variable in the baseTemplateUrl;\n\nexample: '%02d' will format with two digits always",
+                    "default": "%02d"
+                },
+                "jmxUsername": {
+                    "type": "string"
+                },
+                "jmxPassword": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "port number for the JMX web service in each host VM"
+                },
+                "dcs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "numVms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Number of VMs in the environment"
+                },
+                "availabilityZone": {
+                    "type": "string",
+                    "description": "the availability zone, to replace in the baseTemplateUrl"
+                }
+            },
+            "required": [
+                "baseTemplateUrl",
+                "jmxPassword",
+                "jmxUsername",
+                "numVms",
+                "port"
+            ],
+            "title": "EnvironmentConfig"
+        },
+        "CustomCommand": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "This is used to add custom, configurable commands - allows expanding the capabilities of the tool",
+            "properties": {
+                "usage": {
+                    "type": "string",
+                    "description": "the name of the command and the arguments"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "a description of the command, to be shown to the user in the help menu"
+                },
+                "endpoint": {
+                    "type": "string",
+                    "description": "JMX HTML Console endpoint to use for this command. \n\nIf arguments are used, then {0}, {1}, {2}, etc will be used to indicate where they should be replaced in the endpoint. {0} will be replaced with the first argument passed to the CLI, and so on"
+                },
+                "confirmRequest": {
+                    "type": "boolean",
+					"default": "false",
+                    "description": "Optional (default is 'false'). If a 'are you sure?' dialog should be displayed prior to the request being executed"
+                },
+                "subcommands": {
+                    "type": "array",
+                    "description": "\"subcommands\" can be used to add hierarchy; the definition of each subcommand will be exactly the same as any other commands, but they should be called using the parent command name first",
+                    "items": {
+                        "$ref": "#/definitions/CustomCommand"
+                    }
+                },
+                "respMessage": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"},
+                    "description": "Optional, if you want to customize what will be shown to the user.\n\nIf the JMX response is equal to one of the keys, the associated value will be the message that will be shown."
+                }
+            },
+            "required": [
+                "usage",
+                "description",
+                "endpoint"
+            ],
+            "title": "CustomCommand"
+        }
+    }
+}
