@@ -127,6 +127,10 @@
                     "type": "string",
                     "description": "JMX HTML Console endpoint to use for this command. \n\nIf arguments are used, then {0}, {1}, {2}, etc will be used to indicate where they should be replaced in the endpoint. {0} will be replaced with the first argument passed to the CLI, and so on"
                 },
+                "attributeName": {
+                    "type": "string",
+                    "description": "if the endpoint request is for an attribute instead of an operation, this should be specified"
+                },
                 "confirmRequest": {
                     "type": "boolean",
 					"default": "false",
