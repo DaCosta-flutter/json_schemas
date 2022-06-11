@@ -10,6 +10,10 @@
                     "type": "string",
                     "description": "name of the command (generally along the lines of '<tla>cli')"
                 },
+                "vaultUrl": {
+                    "type": "string",
+                    "description": "Optional (default is 'https://vault-prd.prd.betfair/') - used to fetch JMX credentials automatically from Vault"
+                },
                 "config": {
                     "description": "holds the configuration for each environment",
                     "$ref": "#/definitions/Config"
@@ -75,10 +79,14 @@
                     "default": "%02d"
                 },
                 "jmxUsername": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "the JMX username to be used; it can be the plaintext username or it can be fetched from Vault, if prefixed by 'vault:/'. After 'vault:/', the path of the secret is expected, and after the final ':', the JSON key of the credential should be provided.",
+                    "examples": ["vault://tla_name/az/environment:jmx_username"]
                 },
                 "jmxPassword": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "the JMX password to be used; it can be the plaintext password or it can be fetched from Vault, if prefixed by 'vault:/'. After 'vault:/', the path of the secret is expected, and after the final ':', the JSON key of the credential should be provided.",
+                    "examples": ["vault://tla_name/az/environment:jmx_password"]
                 },
                 "port": {
                     "type": "integer",
