@@ -99,11 +99,6 @@
                         "type": "string"
                     }
                 },
-                "numVms": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "description": "Number of VMs in the environment"
-                },
                 "availabilityZone": {
                     "type": "string",
                     "description": "the availability zone, to replace in the baseTemplateUrl"
@@ -113,7 +108,6 @@
                 "baseTemplateUrl",
                 "jmxPassword",
                 "jmxUsername",
-                "numVms",
                 "port"
             ],
             "title": "EnvironmentConfig"
